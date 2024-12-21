@@ -5,7 +5,7 @@ const cors = require('cors');
 const server = express();
 
 const db = mysql.createPool({
-    host: "database",   
+    host: "db",   
     user: "user",      
     password: "password",
     database: "taskdb",
