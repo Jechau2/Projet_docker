@@ -1,5 +1,4 @@
 var taskList = document.getElementById("taskList");
-
 async function addTask() {
     const taskInput = document.getElementById("taskInput");
     const descriptionInput = document.getElementById("Description");
@@ -17,7 +16,7 @@ async function addTask() {
     const newTask = { title, description, deadline };
 
     try {
-        // Appeler l'API backend pour ajouter une tâche
+    
         const response = await fetch("http://localhost:3001/tasks", {
             method: "POST",
             headers: {
@@ -28,7 +27,7 @@ async function addTask() {
 
         if (response.ok) {
             alert("Tâche ajoutée avec succès !");
-            fetchTasks(); // Actualiser la liste des tâches
+            fetchTasks(); 
         } else {
             alert("Erreur lors de l'ajout de la tâche !");
         }
@@ -37,7 +36,6 @@ async function addTask() {
         alert("Erreur de connexion au serveur !");
     }
 
-    // Réinitialiser les champs du formulaire
     taskInput.value = "";
     descriptionInput.value = "";
     dateInput.value = "";
@@ -54,7 +52,7 @@ async function fetchTasks() {
         const tasks = await response.json();
 
         const taskList = document.getElementById("taskList");
-        taskList.innerHTML = ""; // Effacer les tâches existantes
+        taskList.innerHTML = ""; 
 
         tasks.forEach(task => {
             const li = document.createElement("li");
@@ -75,7 +73,6 @@ async function fetchTasks() {
     }
 }
 
-// Charger les tâches au démarrage
 document.addEventListener("DOMContentLoaded", fetchTasks);
 
 async function deleteTask(taskId) {
