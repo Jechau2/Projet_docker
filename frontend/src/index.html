@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion de tâches</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
 </head>
-
 <body>
-    <h1>Gestion de tâches</h1>
 
-    <form id="task-form">
-        <input type="text" id="task-title" placeholder="Titre de la tâche" required>
-        <textarea id="task-desc" placeholder="Description de la tâche"></textarea>
-        <input type="date" id="task-deadline" placeholder="Date limite" required>
-        <button type="submit">Ajouter</button>
-    </form>
 
-    <ul id="task-list"></ul>
+    <h1>Gestion des tâches</h1>
+    <div class="container">
 
-    <script src="app.js"></script>
+       <div class="champs">
+        <input id="taskInput" type="text" placeholder="Ajouter une tâche">
+        <input id="Description" type="text" placeholder="Description">
+        <input id="Date" type="date" placeholder="Pour le">
+        <button onclick="addTask()"><ion-icon name="add-circle-outline"></ion-icon></button>
+       </div>
+      
+        <ul id="taskList">
+        </ul>
+    </div>
+
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <script src="app.js"></script>
 </body>
-
 </html>
