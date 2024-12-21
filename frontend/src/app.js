@@ -1,70 +1,98 @@
 var taskList = document.getElementById("taskList");
 
-function addTask() {
-  var taskInput = document.getElementById("taskInput");
-  var descriptionInput = document.getElementById("Description");
-  var dateInput = document.getElementById("Date");
+async function addTask() {
+    const taskInput = document.getElementById("taskInput");
+    const descriptionInput = document.getElementById("Description");
+    const dateInput = document.getElementById("Date");
 
-  var taskText = taskInput.value;
-  var descriptionText = descriptionInput.value;
-  var dateText = dateInput.value;
+    const title = taskInput.value;
+    const description = descriptionInput.value;
+    const deadline = dateInput.value;
 
-  if (taskText === "" || descriptionText === "" || dateText === "") {
-    alert("Veuillez remplir tous les champs !");
-    return; // Ne rien faire si un champ est vide
-  }
+    if (!title || !description || !deadline) {
+        alert("Veuillez remplir tous les champs !");
+        return;
+    }
 
-  var li = document.createElement("li");
-  li.innerHTML = `
-    <strong>${taskText}</strong> - ${descriptionText} <em>(Pour le : ${dateText})</em>
-  `;
+    const newTask = { title, description, deadline };
 
-  var editButton = document.createElement("button");
-  editButton.innerHTML = '<ion-icon name="pencil-outline" class="modify"></ion-icon>';
-  editButton.onclick = function() {
-    editTask(li);
-  };
+    try {
+        // Appeler l'API backend pour ajouter une tâche
+        const response = await fetch("http://localhost:3001/tasks", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newTask),
+        });
 
-  var deleteButton = document.createElement("button");
-  deleteButton.innerHTML = '<ion-icon name="trash-outline" class="delete"></ion-icon>';
-  deleteButton.onclick = function() {
-    deleteTask(li);
-  };
+        if (response.ok) {
+            alert("Tâche ajoutée avec succès !");
+            fetchTasks(); // Actualiser la liste des tâches
+        } else {
+            alert("Erreur lors de l'ajout de la tâche !");
+        }
+    } catch (error) {
+        console.error("Erreur :", error);
+        alert("Erreur de connexion au serveur !");
+    }
 
-  li.appendChild(editButton);
-  li.appendChild(deleteButton);
-  taskList.appendChild(li);
-
-  // Réinitialiser les champs après ajout
-  taskInput.value = "";
-  descriptionInput.value = "";
-  dateInput.value = "";
+    // Réinitialiser les champs du formulaire
+    taskInput.value = "";
+    descriptionInput.value = "";
+    dateInput.value = "";
 }
 
-function editTask(task) {
-  var taskTextElement = task.querySelector("strong");
-  var descriptionElement = task.childNodes[2];
-  var dateElement = task.querySelector("em");
+async function fetchTasks() {
+    try {
+        const response = await fetch("http://localhost:3001/tasks");
 
-  var taskText = taskTextElement.textContent;
-  var descriptionText = descriptionElement.textContent.split(" - ")[1].split(" (Pour le :")[0].trim();
-  var dateText = dateElement.textContent.replace("(Pour le : ", "").replace(")", "").trim();
+        if (!response.ok) {
+            throw new Error("Erreur lors de la récupération des tâches !");
+        }
 
-  var newTaskText = prompt("Modifier la tâche :", taskText);
-  var newDescription = prompt("Modifier la description :", descriptionText);
-  var newDate = prompt("Modifier la date :", dateText);
+        const tasks = await response.json();
 
-  if (newTaskText !== null && newTaskText !== "") {
-    taskTextElement.textContent = newTaskText;
-  }
-  if (newDescription !== null && newDescription !== "") {
-    descriptionElement.textContent = ` - ${newDescription} `;
-  }
-  if (newDate !== null && newDate !== "") {
-    dateElement.textContent = `(Pour le : ${newDate})`;
-  }
+        const taskList = document.getElementById("taskList");
+        taskList.innerHTML = ""; // Effacer les tâches existantes
+
+        tasks.forEach(task => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <strong>${task.title}</strong> - ${task.description} <em>(Pour le : ${task.deadline})</em>
+            `;
+
+            const deleteButton = document.createElement("button");
+            deleteButton.innerHTML = '<ion-icon name="trash-outline" class="delete"></ion-icon>';
+            deleteButton.onclick = () => deleteTask(task.id);
+
+            li.appendChild(deleteButton);
+            taskList.appendChild(li);
+        });
+    } catch (error) {
+        console.error("Erreur :", error);
+        alert("Erreur lors de la récupération des tâches !");
+    }
 }
 
-function deleteTask(task) {
-  taskList.removeChild(task);
+// Charger les tâches au démarrage
+document.addEventListener("DOMContentLoaded", fetchTasks);
+
+async function deleteTask(taskId) {
+    try {
+        const response = await fetch(`http://localhost:3001/tasks/${taskId}`, {
+            method: "DELETE",
+        });
+
+        if (response.ok) {
+            alert("Tâche supprimée avec succès !");
+            fetchTasks(); // Actualiser la liste des tâches
+        } else {
+            alert("Erreur lors de la suppression de la tâche !");
+        }
+    } catch (error) {
+        console.error("Erreur :", error);
+        alert("Erreur de connexion au serveur !");
+    }
 }
+
