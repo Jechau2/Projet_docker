@@ -11,12 +11,12 @@ function addTask() {
 
   if (taskText === "" || descriptionText === "" || dateText === "") {
     alert("Veuillez remplir tous les champs !");
-    return; // Ne rien faire si un champ est vide
+    return; 
   }
 
   var li = document.createElement("li");
   li.innerHTML = `
-    <strong>${taskText}</strong> - ${descriptionText} <em>(Pour le : ${dateText})</em>
+    <strong>${taskText}</strong> ${descriptionText} <em>Pour : ${dateText}</em>
   `;
 
   var editButton = document.createElement("button");
@@ -47,8 +47,8 @@ function editTask(task) {
   var dateElement = task.querySelector("em");
 
   var taskText = taskTextElement.textContent;
-  var descriptionText = descriptionElement.textContent.split(" - ")[1].split(" (Pour le :")[0].trim();
-  var dateText = dateElement.textContent.replace("(Pour le : ", "").replace(")", "").trim();
+  var descriptionText = descriptionElement.textContent.trim();
+  var dateText = dateElement.textContent.replace("Pour : ", "").trim();
 
   var newTaskText = prompt("Modifier la tâche :", taskText);
   var newDescription = prompt("Modifier la description :", descriptionText);
@@ -58,10 +58,10 @@ function editTask(task) {
     taskTextElement.textContent = newTaskText;
   }
   if (newDescription !== null && newDescription !== "") {
-    descriptionElement.textContent = ` - ${newDescription} `;
+    descriptionElement.textContent = `${newDescription}`;
   }
   if (newDate !== null && newDate !== "") {
-    dateElement.textContent = `(Pour le : ${newDate})`;
+    dateElement.textContent = `Pour : ${newDate}`;
   }
 }
 
